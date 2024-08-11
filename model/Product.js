@@ -1,4 +1,5 @@
-const {model, Schema} = require('mongoose');
+const mongoose = require('mongoose');
+const {Schema} = mongoose;
 
 const productSchema = new Schema({
     title : {type: String, required : true, unique:true},
@@ -26,4 +27,4 @@ productSchema.set('toJSON',{
     transform : function (doc,ret){ delete ret._id}
 })
 
-exports.Product = new model('Product', productSchema)
+exports.Product = mongoose.model('Product', productSchema)

@@ -1,25 +1,33 @@
-const {Cart} = require("../model/Cart")
+const {Cart }= require("../model/Cart")
 
 exports.fetchCartByUser = async(req,res) =>{
-    const user = req.query;
+    const {user} = req.query;
     try {
-        const cartItems = await Cart.find({user:user}).populate('user').populate('product');
+        const cartItems = await Cart.find({user:user}).populate('product');
         res.status(201).json(cartItems)
     } catch (error) {
        res.status(400).json(error) 
     }
 }
 
-exports.addToCart = async(req,res) =>{
-    const cart = new Cart(req.body)
+exports.addToCart = async (req, res) => {
     try {
-        const doc = await cart.save()
-        const result = await doc.populate('product')
-        res.status(201).json(result)
+        // Create a new cart instance
+        const cart = new Cart(req.body);
+        
+        // Save the cart to the database
+        const savedCart = await cart.save();
+        
+        // Populate the 'product' field after the cart has been saved
+        const populatedCart = await savedCart.populate('product')
+        
+        // Send the populated cart as the response
+        res.status(201).json(populatedCart);
     } catch (error) {
-        res.status(400).json(error)
+        // Handle any errors
+        res.status(400).json(error);
     }
-}
+};
 
 exports.deleteFromCart = async(req,res)=>{
     const {id} = req.params
@@ -31,14 +39,24 @@ exports.deleteFromCart = async(req,res)=>{
     }
 }
 
-exports.updateCart = async(req,res) =>{
-    const{ id }= req.params;
+exports.updateCart = async (req, res) => {
+    const { id } = req.params;
     try {
-        const cart = await Cart.findByIdAndUpdate(id,req.body,{
-            new:true
+        // Attempt to find and update the cart
+        const cart = await Cart.findByIdAndUpdate(id, req.body, {
+            new: true,
+            runValidators: true,
         });
-        res.status(200).json(cart)
+
+        if (!cart) {
+            return res.status(404).json({ message: "Cart item not found" });
+        }
+
+        // Populate the 'product' field
+        await cart.populate('product');
+        console.log('Populated cart:', cart);
+        res.status(200).json(cart);
     } catch (error) {
-        res.status(400).json(error)
+        res.status(400).json({ message: "Error updating cart", error });
     }
-}
+};

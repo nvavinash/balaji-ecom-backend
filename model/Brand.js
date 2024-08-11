@@ -1,4 +1,5 @@
-const {model, Schema} = require('mongoose')
+const mongoose = require('mongoose');
+const {Schema} = mongoose
 
 const brandSchema = new Schema({
     label : { type: String, required : true, unique: true},
@@ -16,4 +17,4 @@ brandSchema.set('toJSON',{
 })
 
 
-exports.Brand = new model('Brand', brandSchema)
+exports.Brand = mongoose.model('Brand', brandSchema);

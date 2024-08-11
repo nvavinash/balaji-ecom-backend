@@ -1,4 +1,5 @@
-const {model, Schema} = require('mongoose');
+const mongoose = require('mongoose');
+const {Schema} = mongoose
 
 const categorySchema  = new Schema({
 label : {type : String, required : true, unique : true},
@@ -16,4 +17,4 @@ categorySchema.set('toJSON',{
     transform: function(doc,ret){delete ret._id}
 })
 
-exports.Category = new model('Category', categorySchema)
+exports.Category = mongoose.model('Category', categorySchema)

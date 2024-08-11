@@ -1,10 +1,11 @@
-const {model, Schema} = require('mongoose');
+const mongoose = require('mongoose');
+const {Schema} = mongoose;
 
 const userSchema = new Schema({
 email:{type: String, required: true, unique:true},
 password: {type:String, required:true},
 role: {type:String, required:true, default: "user"},
-adresses:{type : [Schema.Types.Mixed]},
+addresses:{type : [Schema.Types.Mixed]},
 name:{type:String},
 orders:{type:[Schema.Types.Mixed]}
 })
@@ -22,4 +23,4 @@ userSchema.set('toJSON',{
     }
 })
 
-exports.User = new model('User',userSchema);
+exports.User = mongoose.model('User',userSchema);
