@@ -8,10 +8,27 @@ const userRouter = require('./routes/User');
 const authRouter = require('./routes/Auth');
 const cartRouter = require('./routes/Cart');
 const ordersRouter = require('./routes/Order');
+const session = require('express-session');
+const passport = require('passport');
 const cors = require('cors')
 
-server.use(express.json());
 server.use(cors());
+server.use(express.json());
+server.use('/products',productRouters.router);
+// server.post('/products',createProduct);
+server.use('/categories',categoriesRouters.router);
+server.use('/brands',brandsRouters.router);
+server.use('/users',userRouter.router);
+server.use('/auth',authRouter.router);
+server.use('/cart',cartRouter.router);
+server.use('/order',ordersRouter.router)
+
+server.use(session({
+  secret:'keyboard cat',
+  resave:false,
+  saveUninitialized:false,
+}))
+
 
 const connectToDB = async () => {
   try {
@@ -23,20 +40,11 @@ const connectToDB = async () => {
     console.error("Error connecting to MongoDB:", error);
   }
 };
-// connectToDB().catch((err) => console.err(err));
+connectToDB().catch((err) => console.err(err));
 
 server.get("/", (req, res) => {
   res.json({ status: "success" });
 });
-
-server.use('/products',productRouters.router);
-// server.post('/products',createProduct);
-server.use('/categories',categoriesRouters.router);
-server.use('/brands',brandsRouters.router);
-server.use('/users',userRouter.router);
-server.use('/auth',authRouter.router);
-server.use('/cart',cartRouter.router);
-server.use('/order',ordersRouter.router)
 
 connectToDB().then(()=>{
   server.listen(8080, () => {
