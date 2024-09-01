@@ -1,12 +1,11 @@
 const {User} = require('../model/User')
 
 exports.fetchUserById = async(req,res) =>{
-    const {id} = req.params;
-    console.log("this is id",id);
+    const {id} = req.user;
     try{
        const user = await User.findById(id);
        console.log("this is user",user);
-       res.status(200).json(user)
+       res.status(200).json({id:user.id, role:user.role, addresses:user.addresses,email:user.email})
     }catch(error){
         res.status(400).json(error)
     }
