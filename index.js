@@ -58,7 +58,7 @@ passport.use(
     // by default passport uses username
     try {
       const user = await User.findOne({ email: email });
-      console.log(username, password, user);
+      console.log(email, password, user);
       if (!user) {
         return done(null, false, { message: 'invalid credentials' }); // for safety
       }
@@ -73,7 +73,7 @@ passport.use(
             return done(null, false, { message: 'invalid credentials' });
           }
           const token = jwt.sign(sanitizeUser(user), SECRET_KEY);
-          done(null, {token}); // this lines sends to serializer
+          done(null, {id:user.id, role:user.role}); // this lines sends to serializer
         }
       );
     } catch (err) {
